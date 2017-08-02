@@ -34,8 +34,10 @@ public class InputSearchActivity extends Activity implements OnClickListener{
 	}
 	
 	private void initView() {
+		//etSearchInput获得焦点时,填充的黑色区域（类似popupwindow非焦点区域）
 		viewBody = (View)findViewById(R.id.view_body);
 		etSearchInput = (EditText)findViewById(R.id.et_search_input);
+		//加载链接按钮
 		llGo = (LinearLayout)findViewById(R.id.ll_ic_go);
 	}
 	
@@ -49,6 +51,7 @@ public class InputSearchActivity extends Activity implements OnClickListener{
 			webUrl = getIntent().getDataString();
 			if (!AppUtil.isStringEmpty(webUrl)) {
 				etSearchInput.setText(webUrl);
+				//获得焦点时全选文本
 				etSearchInput.setSelectAllOnFocus(true);
 			}
 		}

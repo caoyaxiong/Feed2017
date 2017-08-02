@@ -10,7 +10,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
     buildTypes {
         release {
@@ -20,11 +22,11 @@ android {
     }
     //android studio默认so文件加载目录为:src/main/jniLibs
     //如在module的build.gradle按照如下方式,自定义了so文件加载目录请确保对应目录下只有armeabi目录
-    //    sourceSets {
-    //        main{
-    //            jniLibs.srcDirs = ['libs']
-    //        }
-    //    }
+        sourceSets {
+            main{
+                jniLibs.srcDirs = ['libs']
+            }
+        }
     productFlavors {
     }
 }
@@ -34,6 +36,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //友盟统计
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.feed2017.news">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,6 +21,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 硬件加速对X5视频播放非常重要，建议开启 -->
     <uses-permission android:name="android.permission.GET_TASKS" />
+
     <application
         android:name=".SBrowserApplication"
         android:allowBackup="true"
@@ -24,21 +29,24 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/MyAppTheme" >
+        android:theme="@style/MyAppTheme">
         <activity
             android:name=".activity.BrowserActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="file" />
@@ -49,8 +57,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="http" />
                 <data android:scheme="file" />
                 <data android:scheme="https" />
@@ -60,7 +70,6 @@
                 <data android:mimeType="application/vnd.wap.xhtml+xml" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.InputSearchActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -73,7 +82,7 @@
             android:alwaysRetainTaskState="true"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.tencent.smtt.tbs.video.PLAY" />
 
@@ -81,6 +90,18 @@
             </intent-filter>
         </activity>
         <!-- Tbs X5内核自带视频播放 end -->
+        <!--&lt;!&ndash; YOUR_APP_KEY 替换为您在友盟后台申请的应用Appkey &ndash;&gt;-->
+        <!--<meta-data-->
+            <!--android:name="UMENG_APPKEY"-->
+            <!--android:value="YOUR_APP_KEY" />-->
+        <!--&lt;!&ndash;-->
+        <!--Channel ID 替换为您应用的推广渠道名称，channel id自定义。-->
+        <!--例如在豌豆荚渠道推广此包，代码示例： <meta-data android:value="Wandoujia" android:name="UMENG_CHANNEL"/>-->
+        <!--&ndash;&gt;-->
+        <!--<meta-data-->
+            <!--android:name="UMENG_CHANNEL"-->
+            <!--android:value="Channel ID" />-->
+
     </application>
 
 </manifest>
