@@ -1,14 +1,15 @@
 package com.feed2017.news.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,9 +37,13 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.tencent.smtt.utils.TbsLog;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import static anet.channel.util.Utils.context;
 
 public class BrowserActivity extends Activity implements OnClickListener{
 	//进度条
@@ -92,10 +97,14 @@ public class BrowserActivity extends Activity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
 		setContentView(R.layout.activity_main);
+		//设置多长时间内重新启动页面不计入统计
+		MobclickAgent.setSessionContinueMillis(1000*60*10);
+		PushAgent.getInstance(this).onAppStart();
 		initView();
 		initData();
 		initListener();
 	}
+
 
 	private class JsObject{
 		@JavascriptInterface
@@ -456,12 +465,12 @@ public class BrowserActivity extends Activity implements OnClickListener{
 		public void onReceivedIcon(WebView arg0, Bitmap icon) {
 			// TODO Auto-generated method stub
 			super.onReceivedIcon(arg0, icon);
-			if (ivWebIcon != null) {
-				Drawable db = AppUtil.bitmap2Drawable(icon);
-				if (db != null) {
-					ivWebIcon.setBackgroundDrawable(db);
-				}
-			}
+//			if (ivWebIcon != null) {
+//				Drawable db = AppUtil.bitmap2Drawable(icon);
+//				if (db != null) {
+//					ivWebIcon.setBackgroundDrawable(db);
+//				}
+//			}
 		}
 	}
 	
@@ -476,6 +485,42 @@ public class BrowserActivity extends Activity implements OnClickListener{
 			downloadUtil.startDownload();
 		}
 		
+	}
+	//友盟统计
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	// /对于好多应用，会在程序中杀死 进程，这样会导致我们统计不到此时Activity结束的信息，
+	// /对于这种情况需要调用 'MobclickAgent.onKillProcess( Context )'
+	// /方法，保存一些页面调用的数据。正常的应用是不需要调用此方法的。
+	private void Hook() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setPositiveButton("退出应用", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				MobclickAgent.onKillProcess(BrowserActivity.this);
+
+				int pid = android.os.Process.myPid();
+				android.os.Process.killProcess(pid);
+			}
+		});
+		builder.setNeutralButton("后退一下", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				finish();
+			}
+		});
+		builder.setNegativeButton("点错了", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+			}
+		});
+		builder.show();
 	}
 
 }

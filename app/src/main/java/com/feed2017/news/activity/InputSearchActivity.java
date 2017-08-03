@@ -14,9 +14,10 @@ import android.widget.Toast;
 import com.feed2017.news.R;
 import com.feed2017.news.util.AppUtil;
 import com.feed2017.news.util.Constant;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.PushAgent;
 
 public class InputSearchActivity extends Activity implements OnClickListener{
-	
 	private View viewBody;
 	private EditText etSearchInput;
 	private LinearLayout llGo;
@@ -28,11 +29,13 @@ public class InputSearchActivity extends Activity implements OnClickListener{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_input_search);
+		//设置多长时间内重新启动页面不计入统计
+		MobclickAgent.setSessionContinueMillis(1000*60*10);
+		PushAgent.getInstance(this).onAppStart();
 		initView();
 		initListener();
 		initData();
 	}
-	
 	private void initView() {
 		//etSearchInput获得焦点时,填充的黑色区域（类似popupwindow非焦点区域）
 		viewBody = (View)findViewById(R.id.view_body);
@@ -90,5 +93,40 @@ public class InputSearchActivity extends Activity implements OnClickListener{
 			break;
 		}
 	}
+	//友盟统计
+	@Override
+	public void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+	// /对于好多应用，会在程序中杀死 进程，这样会导致我们统计不到此时Activity结束的信息，
+	// /对于这种情况需要调用 'MobclickAgent.onKillProcess( Context )'
+	// /方法，保存一些页面调用的数据。正常的应用是不需要调用此方法的。
+//	private void Hook() {
+//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setPositiveButton("退出应用", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//				MobclickAgent.onKillProcess(InputSearchActivity.this);
+//
+//				int pid = android.os.Process.myPid();
+//				android.os.Process.killProcess(pid);
+//			}
+//		});
+//		builder.setNeutralButton("后退一下", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//				finish();
+//			}
+//		});
+//		builder.setNegativeButton("点错了", new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialog, int whichButton) {
+//			}
+//		});
+//		builder.show();
+//	}
 }

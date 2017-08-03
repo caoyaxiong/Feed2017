@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+
     compileSdkVersion 26
     buildToolsVersion '26.0.1'
     defaultConfig {
@@ -10,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
         }
@@ -22,12 +24,23 @@ android {
     }
     //android studio默认so文件加载目录为:src/main/jniLibs
     //如在module的build.gradle按照如下方式,自定义了so文件加载目录请确保对应目录下只有armeabi目录
-        sourceSets {
-            main{
-                jniLibs.srcDirs = ['libs']
-            }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
+    }
+    //友盟多渠道打包
     productFlavors {
+
+        wandoujia {}
+        baidu {}
+        c360 {}
+        uc {}
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+
     }
 }
 
@@ -37,7 +50,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //友盟统计
+    compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile project(':PushSDK')
+    compile files('libs/utdid4all-1.0.4.jar')
+    compile 'com.android.support:support-v4:26.0.0-alpha1'
 }
